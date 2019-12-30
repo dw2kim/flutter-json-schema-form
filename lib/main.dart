@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_jsonschema/bloc/JsonSchemaBloc.dart';
+import 'package:flutter_jsonschema/bloc/JsonSchemaParser.dart';
 import 'package:flutter_jsonschema/common/JsonSchemaForm.dart';
 import 'package:flutter_jsonschema/models/Schema.dart';
 
@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appTitle = 'Flutter JsonSchema Demo';
-    JsonSchemaBloc jsonSchemaBloc = JsonSchemaBloc();
+    JsonSchemaParser jsonSchemaBloc = JsonSchemaParser();
     jsonSchemaBloc.getTestSchema();
 
     return MaterialApp(

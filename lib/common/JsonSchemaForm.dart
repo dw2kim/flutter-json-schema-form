@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_jsonschema/bloc/JsonSchemaBloc.dart';
+import 'package:flutter_jsonschema/bloc/JsonSchemaParser.dart';
 import 'package:flutter_jsonschema/common/CheckboxFormField.dart';
-import 'package:flutter_jsonschema/models/Properties.dart';
+import 'package:flutter_jsonschema/models/Property.dart';
 import 'package:flutter_jsonschema/models/Schema.dart';
 
 class JsonSchemaForm extends StatefulWidget {
   final Schema schema;
-  final JsonSchemaBloc jsonSchemaBloc;
+  final JsonSchemaParser jsonSchemaBloc;
 
   JsonSchemaForm({@required this.schema, this.jsonSchemaBloc});
 
   @override
   State<StatefulWidget> createState() {
-    return _jsonSchemaForm(schema: schema, jsonSchemaBloc: jsonSchemaBloc);
+    return _JsonSchemaFormState(schema: schema, jsonSchemaBloc: jsonSchemaBloc);
   }
 }
 
 typedef JsonSchemaFormSetter<T> = void Function(T newValue);
 
-class _jsonSchemaForm extends State<JsonSchemaForm> {
+class _JsonSchemaFormState extends State<JsonSchemaForm> {
   final Schema schema;
   final _formKey = GlobalKey<FormState>();
-  final JsonSchemaBloc jsonSchemaBloc;
+  final JsonSchemaParser jsonSchemaBloc;
 
-  _jsonSchemaForm({@required this.schema, this.jsonSchemaBloc});
+  _JsonSchemaFormState({@required this.schema, this.jsonSchemaBloc});
 
   @override
   Widget build(BuildContext context) {
@@ -98,14 +98,13 @@ class _jsonSchemaForm extends State<JsonSchemaForm> {
                 } else {
                   return Container();
                 }
-              }
-          ),
+              }),
         ],
       ),
     );
   }
 
-  Widget getWidget(Properties properties) {
+  Widget getWidget(Property properties) {
     switch (properties.type) {
       case 'string':
         return getTextField(properties);
@@ -116,7 +115,7 @@ class _jsonSchemaForm extends State<JsonSchemaForm> {
     }
   }
 
-  Widget getTextField(Properties properties) {
+  Widget getTextField(Property properties) {
     return Container(
       child: TextFormField(
         onSaved: (value) {
@@ -130,6 +129,7 @@ class _jsonSchemaForm extends State<JsonSchemaForm> {
               return 'Required';
             }
           }
+          return '';
         },
         decoration: InputDecoration(
           hintText:
@@ -141,7 +141,7 @@ class _jsonSchemaForm extends State<JsonSchemaForm> {
     );
   }
 
-  Widget getCheckBox(Properties properties) {
+  Widget getCheckBox(Property properties) {
     return StreamBuilder(
       stream: jsonSchemaBloc.formData[properties.id],
       builder: (context, snapshot) {
@@ -156,12 +156,14 @@ class _jsonSchemaForm extends State<JsonSchemaForm> {
                   return "Required";
                 }
               }
+              return '';
             },
             onSaved: (bool val) {},
             onChange: (val) {
               Map<String, dynamic> data = Map<String, dynamic>();
               data[properties.id] = val;
               jsonSchemaBloc.jsonDataAdd.add(data);
+              return;
             },
           );
         } else {

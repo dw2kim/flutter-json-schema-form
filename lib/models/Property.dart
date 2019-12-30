@@ -1,11 +1,11 @@
-class Properties {
+class Property {
   String id;
   String type;
   String title;
   dynamic defaultValue;
   bool required;
 
-  Properties({
+  Property({
     this.id,
     this.type,
     this.title,
@@ -13,8 +13,8 @@ class Properties {
     this.required,
   });
 
-  factory Properties.fromJson(String propertyId, Map<String, dynamic> json) {
-    return Properties(
+  factory Property.fromJson(String propertyId, Map<String, dynamic> json) {
+    return Property(
       id: propertyId,
       type: json['type'],
       title: json['title'],
