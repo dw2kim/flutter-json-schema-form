@@ -4,6 +4,7 @@ class Property {
   String title;
   dynamic defaultValue;
   bool required;
+  int minLength;
 
   Property({
     this.id,
@@ -11,6 +12,7 @@ class Property {
     this.title,
     this.defaultValue,
     this.required,
+    this.minLength,
   });
 
   factory Property.fromJson(String propertyId, Map<String, dynamic> json) {
@@ -19,6 +21,7 @@ class Property {
       type: json['type'],
       title: json['title'],
       defaultValue: json['default'],
+      minLength: json['minLength'],
     );
   }
 }

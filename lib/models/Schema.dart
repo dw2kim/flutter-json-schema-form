@@ -40,6 +40,7 @@ class Schema {
           type: data['type'],
           title: data['title'],
           defaultValue: data['default'],
+          minLength: data['minLength'],
           required: required,
         ),
       );

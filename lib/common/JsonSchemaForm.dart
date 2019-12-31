@@ -124,11 +124,15 @@ class _JsonSchemaFormState extends State<JsonSchemaForm> {
           data[properties.id] = value;
           jsonSchemaBloc.jsonDataAdd.add(data);
         },
+        autovalidate: true,
         validator: (String value) {
-          if (properties.required) {
-            if (value.isEmpty) {
-              return 'Required';
-            }
+          if (properties.required && value.isEmpty) {
+            return 'Required';
+          }
+          if (properties.minLength != null &&
+              value.isNotEmpty &&
+              value.length <= properties.minLength) {
+            return 'should NOT be shorter than ${properties.minLength} characters';
           }
           return null;
         },
