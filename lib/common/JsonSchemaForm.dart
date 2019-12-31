@@ -118,6 +118,7 @@ class _JsonSchemaFormState extends State<JsonSchemaForm> {
   Widget getTextField(Property properties) {
     return Container(
       child: TextFormField(
+        initialValue: properties.defaultValue ?? '',
         onSaved: (value) {
           Map<String, dynamic> data = Map<String, dynamic>();
           data[properties.id] = value;
@@ -129,11 +130,9 @@ class _JsonSchemaFormState extends State<JsonSchemaForm> {
               return 'Required';
             }
           }
-          return '';
+          return null;
         },
         decoration: InputDecoration(
-          hintText:
-              properties.defaultValue != null ? properties.defaultValue : '',
           labelText:
               properties.required ? properties.title + ' *' : properties.title,
         ),
@@ -156,7 +155,7 @@ class _JsonSchemaFormState extends State<JsonSchemaForm> {
                   return "Required";
                 }
               }
-              return '';
+              return null;
             },
             onSaved: (bool val) {},
             onChange: (val) {
