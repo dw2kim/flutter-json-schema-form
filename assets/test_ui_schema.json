@@ -1,7 +1,7 @@
 {
   "firstName": {
     "ui:autofocus": true,
-    "ui:emptyValue": ""
+    "ui:emptyValue": "X"
   },
   "age": {
     "ui:widget": "updown",

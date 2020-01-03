@@ -15,16 +15,26 @@ class Schema {
     this.properties,
   });
 
-  factory Schema.fromJson(Map<String, dynamic> json) {
+  factory Schema.fromJsonSchema(Map<String, dynamic> jsonSchema) {
     Schema newSchema = Schema(
-      title: json['title'],
-      type: json['type'],
-      description: json['description'],
-      required: json['required'],
+      title: jsonSchema['title'],
+      type: jsonSchema['type'],
+      description: jsonSchema['description'],
+      required: jsonSchema['required'],
     );
-    newSchema.setProperties(json['properties'], newSchema.required);
+    newSchema.setProperties(jsonSchema['properties'], newSchema.required);
     print(newSchema.properties);
     return newSchema;
+  }
+
+  void setUiSchema(
+      Map<String, dynamic> uiSchema) {
+    uiSchema.forEach((key, data) {
+      var props = properties.where((x) => x.id == key).toList();
+      if(props.length > 0) {
+        props.first = Property.fromUiSchema(props.first , uiSchema[key]);
+      }
+    });
   }
 
   setProperties(Map<String, dynamic> json, List<dynamic> requiredList) {
@@ -49,4 +59,3 @@ class Schema {
     this.properties = props;
   }
 }
-
