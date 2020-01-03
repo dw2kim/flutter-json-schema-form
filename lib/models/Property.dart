@@ -8,6 +8,9 @@ class Property {
   bool autoFocus;
   String emptyValue;
   String description;
+  String help;
+  String widget;
+  Options options;
 
   Property({
     this.id,
@@ -19,6 +22,8 @@ class Property {
     this.autoFocus,
     this.emptyValue,
     this.description,
+    this.help,
+    this.options,
   });
 
   factory Property.fromJsonSchema(
@@ -36,7 +41,7 @@ class Property {
     Property property = prop;
 
     uiSchema.forEach((key, data) {
-      switch(key) {
+      switch (key) {
         case "ui:autofocus":
           property.autoFocus = data as bool;
           break;
@@ -49,11 +54,36 @@ class Property {
         case "ui:description":
           property.description = data as String;
           break;
+        case "ui:help":
+          property.help = data as String;
+          break;
+        case "ui:widget":
+          property.widget = data as String;
+          break;
+        case "ui:options":
+          property.options = Options.fromJson(data);
+          break;
         default:
           break;
       }
     });
 
     return property;
+  }
+}
+
+class Options {
+  String inputType;
+
+  Options({
+    this.inputType,
+  });
+
+  factory Options.fromJson(Map<String, dynamic> json) {
+    Options options =Options();
+
+    options.inputType = json["inputType"];
+
+    return options;
   }
 }

@@ -157,6 +157,29 @@ class _JsonSchemaFormState extends State<JsonSchemaForm> {
         });
   }
 
+  TextInputType getTextInputType(String widget, Options options) {
+    TextInputType textInputType;
+    if (widget != null) {
+      switch (widget) {
+        case "textarea":
+          textInputType = TextInputType.multiline;
+          break;
+        case "password":
+          textInputType = TextInputType.visiblePassword;
+          break;
+      }
+    }
+
+    if (options != null) {
+      switch (options.inputType) {
+        case "tel":
+          textInputType = TextInputType.phone;
+          break;
+      }
+    }
+    return textInputType;
+  }
+
   Widget getTextField(Property property) {
     return StreamBuilder(
       stream: parser.formData[property.id],
@@ -164,6 +187,9 @@ class _JsonSchemaFormState extends State<JsonSchemaForm> {
         return Container(
           child: TextFormField(
             autofocus: (property.autoFocus ?? false),
+            keyboardType: getTextInputType(property.widget, property.options),
+            maxLines: property.widget == "textarea" ? 2 : 1,
+            obscureText: property.widget == "password",
             initialValue: property.defaultValue ?? '',
             onSaved: (value) {
               Map<String, dynamic> data = Map<String, dynamic>();
@@ -192,6 +218,7 @@ class _JsonSchemaFormState extends State<JsonSchemaForm> {
             decoration: InputDecoration(
               labelText:
                   property.required ? property.title + ' *' : property.title,
+              helperText: property.help,
             ),
           ),
         );
