@@ -7,6 +7,7 @@ class Property {
   int minLength;
   bool autoFocus;
   String emptyValue;
+  String description;
 
   Property({
     this.id,
@@ -17,6 +18,7 @@ class Property {
     this.minLength,
     this.autoFocus,
     this.emptyValue,
+    this.description,
   });
 
   factory Property.fromJsonSchema(
@@ -44,7 +46,9 @@ class Property {
         case "ui:title":
           property.title = data as String;
           break;
-
+        case "ui:description":
+          property.description = data as String;
+          break;
         default:
           break;
       }

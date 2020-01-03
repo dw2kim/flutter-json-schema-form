@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_jsonschema/bloc/SchemaParser.dart';
 import 'package:flutter_jsonschema/common/CheckboxFormField.dart';
@@ -108,6 +109,8 @@ class _JsonSchemaFormState extends State<JsonSchemaForm> {
     switch (properties.type) {
       case 'string':
         return getTextField(properties);
+      case 'integer':
+        return getNumberField(properties);
       case 'boolean':
         return getCheckBox(properties);
       default:
@@ -115,42 +118,80 @@ class _JsonSchemaFormState extends State<JsonSchemaForm> {
     }
   }
 
-  Widget getTextField(Property properties) {
+  Widget getNumberField(Property property) {
     return StreamBuilder(
-      stream: parser.formData[properties.id],
+        stream: parser.formData[property.id],
+        builder: (context, snapshot) {
+          return Container(
+              child: TextFormField(
+            keyboardType: TextInputType.number,
+            inputFormatters: <TextInputFormatter>[
+              WhitelistingTextInputFormatter.digitsOnly
+            ],
+            autofocus: (property.autoFocus ?? false),
+            onSaved: (value) {
+              Map<String, dynamic> data = Map<String, dynamic>();
+              data[property.id] = value;
+              parser.jsonDataAdd.add(data);
+            },
+            autovalidate: true,
+            validator: (String value) {
+              if (property.required && value.isEmpty) {
+                return 'Required';
+              }
+              if (property.minLength != null &&
+                  value.isNotEmpty &&
+                  value.length <= property.minLength) {
+                return 'should NOT be shorter than ${property.minLength} characters';
+              }
+              return null;
+            },
+            decoration: InputDecoration(
+              labelText:
+                  (property.required ? property.title + ' *' : property.title) +
+                      (property.description != null
+                          ? ' ' + property.description
+                          : ''),
+            ),
+          ));
+        });
+  }
+
+  Widget getTextField(Property property) {
+    return StreamBuilder(
+      stream: parser.formData[property.id],
       builder: (context, snapshot) {
         return Container(
           child: TextFormField(
-            autofocus: (properties.autoFocus ?? false),
-            initialValue: properties.defaultValue ?? '',
+            autofocus: (property.autoFocus ?? false),
+            initialValue: property.defaultValue ?? '',
             onSaved: (value) {
               Map<String, dynamic> data = Map<String, dynamic>();
-              data[properties.id] = value;
+              data[property.id] = value;
               parser.jsonDataAdd.add(data);
             },
             autovalidate: true,
             onChanged: (String value) {
-              if (properties.emptyValue != null && value.isEmpty) {
-                return properties.emptyValue;
+              if (property.emptyValue != null && value.isEmpty) {
+                return property.emptyValue;
               }
 
               return value;
             },
             validator: (String value) {
-              if (properties.required && value.isEmpty) {
+              if (property.required && value.isEmpty) {
                 return 'Required';
               }
-              if (properties.minLength != null &&
+              if (property.minLength != null &&
                   value.isNotEmpty &&
-                  value.length <= properties.minLength) {
-                return 'should NOT be shorter than ${properties.minLength} characters';
+                  value.length <= property.minLength) {
+                return 'should NOT be shorter than ${property.minLength} characters';
               }
               return null;
             },
             decoration: InputDecoration(
-              labelText: properties.required
-                  ? properties.title + ' *'
-                  : properties.title,
+              labelText:
+                  property.required ? property.title + ' *' : property.title,
             ),
           ),
         );
