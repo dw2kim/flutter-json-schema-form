@@ -188,7 +188,7 @@ class _JsonSchemaFormState extends State<JsonSchemaForm> {
           child: TextFormField(
             autofocus: (property.autoFocus ?? false),
             keyboardType: getTextInputType(property.widget, property.options),
-            maxLines: property.widget == "textarea" ? 2 : 1,
+            maxLines: property.widget == "textarea" ? null : 1,
             obscureText: property.widget == "password",
             initialValue: property.defaultValue ?? '',
             onSaved: (value) {

@@ -27,12 +27,11 @@ class Schema {
     return newSchema;
   }
 
-  void setUiSchema(
-      Map<String, dynamic> uiSchema) {
+  void setUiSchema(Map<String, dynamic> uiSchema) {
     uiSchema.forEach((key, data) {
       var props = properties.where((x) => x.id == key).toList();
-      if(props.length > 0) {
-        props.first = Property.fromUiSchema(props.first , uiSchema[key]);
+      if (props.length > 0) {
+        props.first = Property.fromUiSchema(props.first, uiSchema[key]);
       }
     });
   }

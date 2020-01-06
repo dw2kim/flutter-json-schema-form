@@ -59,8 +59,8 @@ class SchemaParser {
 
     String uiSchema = await rootBundle.loadString('assets/test_ui_schema.json');
     Map<String, dynamic> uiSchemaMap = json.decode(uiSchema);
-    _jsonSchema.add(
-        Schema.fromJsonSchema(jsonSchemaMap)..setUiSchema(uiSchemaMap));
+    _jsonSchema
+        .add(Schema.fromJsonSchema(jsonSchemaMap)..setUiSchema(uiSchemaMap));
   }
 
   void initDataBinding(List<Property> properties) {

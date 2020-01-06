@@ -80,7 +80,7 @@ class Options {
   });
 
   factory Options.fromJson(Map<String, dynamic> json) {
-    Options options =Options();
+    Options options = Options();
 
     options.inputType = json["inputType"];
 
