@@ -1,11 +1,11 @@
-import 'package:flutter_jsonschema/models/Property.dart';
+import 'package:flutter_jsonschema/models/Properties.dart';
 
 class Schema {
   String title;
   String type;
   String description;
   List<dynamic> required;
-  List<Property> properties;
+  List<Properties> properties;
 
   Schema({
     this.title,
@@ -15,7 +15,7 @@ class Schema {
     this.properties,
   });
 
-  factory Schema.fromJsonSchema(Map<String, dynamic> jsonSchema) {
+  factory Schema.fromJson(Map<String, dynamic> jsonSchema) {
     Schema newSchema = Schema(
       title: jsonSchema['title'],
       type: jsonSchema['type'],
@@ -31,20 +31,20 @@ class Schema {
     uiSchema.forEach((key, data) {
       var props = properties.where((x) => x.id == key).toList();
       if (props.length > 0) {
-        props.first = Property.fromUiSchema(props.first, uiSchema[key]);
+        props.first = Properties.fromUiSchema(props.first, uiSchema[key]);
       }
     });
   }
 
   setProperties(Map<String, dynamic> json, List<dynamic> requiredList) {
-    List<Property> props = List<Property>();
+    List<Properties> props = List<Properties>();
     json.forEach((key, data) {
       bool required = true;
       if (requiredList.indexOf(key) == -1) {
         required = false;
       }
       props.add(
-        Property(
+        Properties(
           id: key,
           type: data['type'],
           title: data['title'],

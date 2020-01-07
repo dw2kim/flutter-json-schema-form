@@ -1,4 +1,4 @@
-class Property {
+class Properties {
   String id;
   String type;
   String title;
@@ -12,7 +12,7 @@ class Property {
   String widget;
   Options options;
 
-  Property({
+  Properties({
     this.id,
     this.type,
     this.title,
@@ -26,9 +26,9 @@ class Property {
     this.options,
   });
 
-  factory Property.fromJsonSchema(
+  factory Properties.fromJsonSchema(
       String propertyId, Map<String, dynamic> jsonSchema) {
-    return Property(
+    return Properties(
       id: propertyId,
       type: jsonSchema['type'],
       title: jsonSchema['title'],
@@ -37,8 +37,8 @@ class Property {
     );
   }
 
-  factory Property.fromUiSchema(Property prop, Map<String, dynamic> uiSchema) {
-    Property property = prop;
+  factory Properties.fromUiSchema(Properties prop, Map<String, dynamic> uiSchema) {
+    Properties property = prop;
 
     uiSchema.forEach((key, data) {
       switch (key) {

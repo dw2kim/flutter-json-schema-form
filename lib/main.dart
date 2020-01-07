@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_jsonschema/bloc/SchemaParser.dart';
+import 'package:flutter_jsonschema/bloc/JsonSchemaBloc.dart';
 import 'package:flutter_jsonschema/common/JsonSchemaForm.dart';
 import 'package:flutter_jsonschema/models/Schema.dart';
 
@@ -9,8 +9,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appTitle = 'Flutter JsonSchema Demo';
-    SchemaParser parser = SchemaParser();
-    parser.getTestSchema();
+    JsonSchemaBloc jsonSchemaBloc = JsonSchemaBloc();
+    jsonSchemaBloc.getTestSchema();
 
     return MaterialApp(
       title: appTitle,
@@ -19,12 +19,12 @@ class MyApp extends StatelessWidget {
           title: Text(appTitle),
         ),
         body: StreamBuilder<Schema>(
-          stream: parser.jsonSchema,
+          stream: jsonSchemaBloc.jsonSchema,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return JsonSchemaForm(
                 schema: snapshot.data,
-                parser: parser,
+                jsonSchemaBloc: jsonSchemaBloc,
               );
             } else {
               return Container(

@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_jsonschema/bloc/SchemaParser.dart';
+import 'package:flutter_jsonschema/bloc/JsonSchemaBloc.dart';
 import 'package:flutter_jsonschema/common/CheckboxFormField.dart';
-import 'package:flutter_jsonschema/models/Property.dart';
+import 'package:flutter_jsonschema/models/Properties.dart';
 import 'package:flutter_jsonschema/models/Schema.dart';
 
 class JsonSchemaForm extends StatefulWidget {
   final Schema schema;
-  final SchemaParser parser;
+  final JsonSchemaBloc jsonSchemaBloc;
 
-  JsonSchemaForm({@required this.schema, this.parser});
+  JsonSchemaForm({@required this.schema, this.jsonSchemaBloc});
 
   @override
   State<StatefulWidget> createState() {
-    return _JsonSchemaFormState(schema: schema, parser: parser);
+    return _JsonSchemaFormState(schema: schema, jsonSchemaBloc: jsonSchemaBloc);
   }
 }
 
@@ -23,9 +23,9 @@ typedef JsonSchemaFormSetter<T> = void Function(T newValue);
 class _JsonSchemaFormState extends State<JsonSchemaForm> {
   final Schema schema;
   final _formKey = GlobalKey<FormState>();
-  final SchemaParser parser;
+  final JsonSchemaBloc jsonSchemaBloc;
 
-  _JsonSchemaFormState({@required this.schema, this.parser});
+  _JsonSchemaFormState({@required this.schema, this.jsonSchemaBloc});
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +82,7 @@ class _JsonSchemaFormState extends State<JsonSchemaForm> {
                         _formKey.currentState.save();
                         Map<String, dynamic> data = Map<String, dynamic>();
                         data['submit'] = true;
-                        parser.jsonDataAdd.add(data);
+                        jsonSchemaBloc.jsonDataAdd.add(data);
                       }
                     },
                     child: Text('Submit'),
@@ -92,7 +92,7 @@ class _JsonSchemaFormState extends State<JsonSchemaForm> {
             ),
           ),
           StreamBuilder(
-              stream: parser.submitData,
+              stream: jsonSchemaBloc.submitData,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Text(snapshot.data);
@@ -105,7 +105,7 @@ class _JsonSchemaFormState extends State<JsonSchemaForm> {
     );
   }
 
-  Widget getWidget(Property properties) {
+  Widget getWidget(Properties properties) {
     switch (properties.type) {
       case 'string':
         return getTextField(properties);
@@ -118,9 +118,9 @@ class _JsonSchemaFormState extends State<JsonSchemaForm> {
     }
   }
 
-  Widget getNumberField(Property property) {
+  Widget getNumberField(Properties property) {
     return StreamBuilder(
-        stream: parser.formData[property.id],
+        stream: jsonSchemaBloc.formData[property.id],
         builder: (context, snapshot) {
           return Container(
               child: TextFormField(
@@ -132,7 +132,7 @@ class _JsonSchemaFormState extends State<JsonSchemaForm> {
             onSaved: (value) {
               Map<String, dynamic> data = Map<String, dynamic>();
               data[property.id] = value;
-              parser.jsonDataAdd.add(data);
+              jsonSchemaBloc.jsonDataAdd.add(data);
             },
             autovalidate: true,
             validator: (String value) {
@@ -180,9 +180,9 @@ class _JsonSchemaFormState extends State<JsonSchemaForm> {
     return textInputType;
   }
 
-  Widget getTextField(Property property) {
+  Widget getTextField(Properties property) {
     return StreamBuilder(
-      stream: parser.formData[property.id],
+      stream: jsonSchemaBloc.formData[property.id],
       builder: (context, snapshot) {
         return Container(
           child: TextFormField(
@@ -194,7 +194,7 @@ class _JsonSchemaFormState extends State<JsonSchemaForm> {
             onSaved: (value) {
               Map<String, dynamic> data = Map<String, dynamic>();
               data[property.id] = value;
-              parser.jsonDataAdd.add(data);
+              jsonSchemaBloc.jsonDataAdd.add(data);
             },
             autovalidate: true,
             onChanged: (String value) {
@@ -226,9 +226,9 @@ class _JsonSchemaFormState extends State<JsonSchemaForm> {
     );
   }
 
-  Widget getCheckBox(Property properties) {
+  Widget getCheckBox(Properties properties) {
     return StreamBuilder(
-      stream: parser.formData[properties.id],
+      stream: jsonSchemaBloc.formData[properties.id],
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return CheckboxFormField(
@@ -247,7 +247,7 @@ class _JsonSchemaFormState extends State<JsonSchemaForm> {
             onChange: (val) {
               Map<String, dynamic> data = Map<String, dynamic>();
               data[properties.id] = val;
-              parser.jsonDataAdd.add(data);
+              jsonSchemaBloc.jsonDataAdd.add(data);
               return;
             },
           );
@@ -261,6 +261,6 @@ class _JsonSchemaFormState extends State<JsonSchemaForm> {
   @override
   void dispose() {
     super.dispose();
-    parser.dispose();
+    jsonSchemaBloc.dispose();
   }
 }

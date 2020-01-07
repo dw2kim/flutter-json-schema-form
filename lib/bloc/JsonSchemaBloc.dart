@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:flutter/services.dart';
-import 'package:flutter_jsonschema/models/Property.dart';
+import 'package:flutter_jsonschema/models/Properties.dart';
 import 'dart:convert';
 import 'package:rxdart/subjects.dart';
 import 'package:flutter_jsonschema/models/Schema.dart';
 
-class SchemaParser {
+class JsonSchemaBloc {
   Map<String, BehaviorSubject<dynamic>> _formData =
       Map<String, BehaviorSubject<dynamic>>();
   Map<String, Stream<dynamic>> formData = Map<String, Stream<dynamic>>();
@@ -21,7 +21,7 @@ class SchemaParser {
   PublishSubject<String> _submitData = PublishSubject<String>();
   Stream<String> get submitData => _submitData;
 
-  SchemaParser() {
+  JsonSchemaBloc() {
     _jsonSchema.stream.listen((schema) {
       initDataBinding(schema.properties);
     });
@@ -47,7 +47,7 @@ class SchemaParser {
 
   Future<Schema> readFromJSONString(String content) async {
     Map<String, dynamic> jsonMap = json.decode(content);
-    Schema schema = Schema.fromJsonSchema(jsonMap);
+    Schema schema = Schema.fromJson(jsonMap);
     initDataBinding(schema.properties);
     return schema;
   }
@@ -60,10 +60,10 @@ class SchemaParser {
     String uiSchema = await rootBundle.loadString('assets/test_ui_schema.json');
     Map<String, dynamic> uiSchemaMap = json.decode(uiSchema);
     _jsonSchema
-        .add(Schema.fromJsonSchema(jsonSchemaMap)..setUiSchema(uiSchemaMap));
+        .add(Schema.fromJson(jsonSchemaMap)..setUiSchema(uiSchemaMap));
   }
 
-  void initDataBinding(List<Property> properties) {
+  void initDataBinding(List<Properties> properties) {
     properties.forEach((prop) {
       _formData[prop.id] = BehaviorSubject<dynamic>();
       formData[prop.id] = _formData[prop.id].stream;
